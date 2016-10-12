@@ -6,7 +6,7 @@
         "name": "Anshul Srivastava",
         "email": "anshul_srivastava1987@yahoo.co.in"
     },
-    "main": "main.js",
+    "main": "index.js",
     "dependencies": {
         "http-browserify": "1.7.0",
         "https-browserify": "0.0.1",
