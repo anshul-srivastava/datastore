@@ -11,11 +11,11 @@ Files are used as database to store data. Data is stored as a series of deltas, 
 ---------------------
 A delta has following structure :-
 
-```json
+```
 {
    "< table-name >" : {
         "i" :  {
-          "< record-id >" : < object (Record Data) >
+          "< record-id >" : <object (Record Data)>
          },
          "d" : [ "< record-id >"],
          "s" :   < object (table-snapshot) >,
