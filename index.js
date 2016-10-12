@@ -13,3 +13,7 @@ module.exports.openDatastore = function openDatastore(datastoreName, options, ca
     });
 
 };
+
+module.exports.setStorage = function(type, Contructor) {
+    storageService.setStorage(type, Contructor);
+};
