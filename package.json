@@ -1,7 +1,7 @@
 {
-    "name": "datastore",
+    "name": "file-datastore",
     "version": "0.0.1",
-    "description": "A datastore to store and sync structure data in files",
+    "description": "A file based datastore to store and sync structure data",
     "author": {
         "name": "Anshul Srivastava",
         "email": "anshul_srivastava1987@yahoo.co.in"
