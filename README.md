@@ -7,6 +7,8 @@ With Datastore; structured data (e.g. contacts, to-do items, etc.) can be stored
 
 Files are used as database to store data.
 
+Browserify Compatible
+
 NOTE: 
 Current implementation supports Dropbox, this can be extendable for other storage providers (e.g. Box, Google Drive etc.) as well.
 
