@@ -27,8 +27,8 @@ Example:
 	        console.error(err, "unable to open datastore");
 	        return;
 		 }
-		 var tableTodo = ds.getTable('contact');
-		 tableTodo.insert({
+		 var tableContact = ds.getTable('contact');
+		 tableContact.insert({
 	          	"name":"John Smith",
 	          	"city":"New York",
 	          	"country":"US"
