@@ -1,5 +1,5 @@
 {
-    "name": "Datastore",
+    "name": "datastore",
     "version": "0.0.1",
     "description": "A datastore to store and sync structure data in files",
     "author": {
