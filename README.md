@@ -35,7 +35,9 @@ Example:
 	          	"city":"New York",
 	          	"country":"US"
          });
-         datastore.commit(); // commits the changes to file. changes won't get reflect until and unless a commit is called on datastore.
+         /* commits the changes to file. 
+         changes won't get reflect until and unless a commit is called on datastore.*/
+         datastore.commit(); 
         
         // updating a record 
         record.set('city','Chicago');
