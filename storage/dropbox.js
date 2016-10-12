@@ -6,12 +6,11 @@ function DropboxStorage(datastoreName, options) {
 
     var self = this;
 
-    var appKey = options.auth.appKey;
+ 
     var accessToken = options.auth.token;
     var relativePath = options.path || '/';
     var datastorePath = relativePath + datastoreName;
-    var pollingTimeout = options.pollingInterval | 10000;
-    var browser = options.browser || false; // since dropbox notify api doesnt supports cors
+  
     var uploading = false;
 
     var onChangeEventListener;
@@ -126,121 +125,13 @@ function DropboxStorage(datastoreName, options) {
 
     }
 
-    // for polling 
-    function longPoll(options, callback) {
-        var params = {
-            "cursor": options.cursor,
-            "timeout": options.timeout
-        };
+    
 
-
-        var req = http.request({
-            method: 'POST',
-            headers: getHeaders(null, {
-                "Content-Type": "application/json"
-            }),
-            host: 'notify.dropboxapi.com',
-            path: '/2/files/list_folder/longpoll'
-        }, function(res) {
-
-            processResponse(res, function(err, resBody) {
-                if (err) {
-                    return callback(err);
-                }
-                if (res.statusCode === 200) {
-                    var resObj = JSON.parse(resBody);
-                    return callback(null, resObj);
-                } else {
-                    return callback({
-                        error: true,
-                        res: res,
-                        resBody: resBody
-                    });
-                }
-            });
-        });
-        req.write(JSON.stringify(params));
-        req.end();
-    }
-
-    // for polling 
-    function getMeta(callback) {
-        var params = {
-            path: datastorePath,
-            include_media_info: false,
-            include_deleted: false
-        };
-        var req = http.request({
-            method: 'POST',
-            headers: getHeaders(null, {
-                "Content-Type": "application/json"
-            }),
-            host: 'api.dropboxapi.com',
-            path: '/2/files/get_metadata',
-        }, function(res) {
-            processResponse(res, function(err, resBody) {
-                if (err) {
-                    return callback(err);
-                }
-                if (res.statusCode === 200) {
-                    var resObj = JSON.parse(resBody);
-                    return callback(null, resObj);
-                } else {
-                    return callback({
-                        error: true,
-                        res: res,
-                        resBody: resBody
-                    });
-
-                }
-            });
-
-        });
-        req.write(JSON.stringify(params));
-        req.end();
-    }
-
-    function poll() {
-        setTimeout(function() {
-
-            var count = 0;
-
-            function listFolderCallback(err, data) {
-                if (err) {
-                    poll();
-                }
-                count = count + data.entries.length;
-                if (data.has_more) {
-                    lisfFolderContinue(data.cursor, listFolderCallback);
-                } else {
-                    if (count !== fileCount && !uploading) {
-                        //firing event
-
-
-                        if (typeof onChangeEventListener === "function") {
-                            onChangeEventListener();
-                        }
-
-                    }
-                    fileCount = count;
-                    poll();
-                }
-            }
-            listFolder(listFolderCallback);
-        }, pollingTimeout);
-    }
-
-    //firing poll
-    //poll();
-
+    
 
     this.setOnChangeEventListener = function setOnChangeEventListener(func) {
         onChangeEventListener = func;
     };
-
-
-
-
 
 
     this.exists = function(callback) {
