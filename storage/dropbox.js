@@ -1,4 +1,4 @@
-var http = require('http');
+var http = require('https');
 
 
 
@@ -66,7 +66,8 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(null, {
                 "Content-Type": "application/json"
             }),
-            path: 'https://api.dropboxapi.com/2/files/list_folder'
+            host: 'api.dropboxapi.com',
+            path: '/2/files/list_folder'
         }, function(res) {
 
             processResponse(res, function(err, resBody) {
@@ -100,7 +101,8 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(null, {
                 "Content-Type": "application/json"
             }),
-            path: 'https://api.dropboxapi.com/2/files/list_folder/continue'
+            host: 'api.dropboxapi.com',
+            path: '/2/files/list_folder/continue'
         }, function(res) {
 
             processResponse(res, function(err, resBody) {
@@ -137,7 +139,8 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(null, {
                 "Content-Type": "application/json"
             }),
-            path: 'https://notify.dropboxapi.com/2/files/list_folder/longpoll'
+            host: 'notify.dropboxapi.com',
+            path: '/2/files/list_folder/longpoll'
         }, function(res) {
 
             processResponse(res, function(err, resBody) {
@@ -172,7 +175,8 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(null, {
                 "Content-Type": "application/json"
             }),
-            path: 'https://api.dropboxapi.com/2/files/get_metadata',
+            host: 'api.dropboxapi.com',
+            path: '/2/files/get_metadata',
         }, function(res) {
             processResponse(res, function(err, resBody) {
                 if (err) {
@@ -211,7 +215,7 @@ function DropboxStorage(datastoreName, options) {
                 } else {
                     if (count !== fileCount && !uploading) {
                         //firing event
-                     
+
 
                         if (typeof onChangeEventListener === "function") {
                             onChangeEventListener();
@@ -240,7 +244,7 @@ function DropboxStorage(datastoreName, options) {
 
 
     this.exists = function(callback) {
-        
+
         var params = {
             path: datastorePath,
             include_media_info: false,
@@ -251,7 +255,8 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(null, {
                 "Content-Type": "application/json"
             }),
-            path: 'https://api.dropboxapi.com/2/files/get_metadata',
+            host: 'api.dropboxapi.com',
+            path: '/2/files/get_metadata',
         }, function(res) {
             processResponse(res, function(err, resBody) {
                 if (err) {
@@ -297,7 +302,8 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(null, {
                 "Content-Type": "application/json"
             }),
-            path: 'https://api.dropboxapi.com/2/files/create_folder'
+            host:'api.dropboxapi.com',
+            path: '/2/files/create_folder'
         }, function(res) {
 
             processResponse(res, function(err, resBody) {
@@ -374,7 +380,8 @@ function DropboxStorage(datastoreName, options) {
         var req = http.request({
             method: 'POST',
             headers: getHeaders(params),
-            path: 'https://content.dropboxapi.com/2/files/download',
+            host: 'content.dropboxapi.com',
+            path: '/2/files/download',
 
         }, function(res) {
             processResponse(res, function(err, resBody) {
@@ -412,7 +419,8 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(params, {
                 "Content-Type": "application/octet-stream"
             }),
-            path: 'https://content.dropboxapi.com/2/files/upload',
+            host:'content.dropboxapi.com',
+            path: '/2/files/upload',
         }, function(res) {
 
             processResponse(res, function(err, resBody) {
@@ -469,7 +477,8 @@ function DropboxStorage(datastoreName, options) {
                 headers: getHeaders(null, {
                     "Content-Type": "application/json"
                 }),
-                path: 'https://api.dropboxapi.com/2/files/delete_batch/check'
+                host:'api.dropboxapi.com',
+                path: '/2/files/delete_batch/check'
             }, function(res) {
 
                 processResponse(res, function(err, resBody) {
@@ -528,7 +537,8 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(null, {
                 "Content-Type": "application/json"
             }),
-            path: 'https://api.dropboxapi.com/2/files/delete_batch'
+            host:'api.dropboxapi.com',
+            path: '/2/files/delete_batch'
         }, function(res) {
 
             processResponse(res, function(err, resBody) {

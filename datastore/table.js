@@ -1,6 +1,5 @@
 //var Record = require('./record.js');
 var shortid = require('shortid');
-var jsonQuery = require('json-query')
 
 function Table(tableName, structuredData) {
 

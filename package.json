@@ -1,16 +1,28 @@
 {
     "name": "Datastore",
     "version": "0.0.1",
-    "author": "Anshul Srivastava",
-    "description": "A datastore wrapper",
+    "description": "A datastore to store and sync structure data in files",
+    "author": {
+        "name": "Anshul Srivastava",
+        "email": "anshul_srivastava1987@yahoo.co.in"
+    },
     "main": "main.js",
     "dependencies": {
         "http-browserify": "1.7.0",
         "https-browserify": "0.0.1",
-        "shortid": "2.2.6",
-        "json-query": "2.2.0"
+        "shortid": "2.2.6"
     },
     "devDependencies": {
         "browserify": "latest"
+    },
+    "keywords": [
+        "datastore",
+        "dropbox",
+        "browserify"
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/anshul-srivastava/datastore.git"
     }
 }
