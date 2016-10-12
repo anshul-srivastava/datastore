@@ -37,7 +37,10 @@ In case of conflict between deltas of different devices, Following precedence is
  - **update** :- In case there is an update to the same record data, remote will always win. Update operation has the lowest precedence.
 
 
-Browserify Compatible.
+----------
+
+
+This module is Browserify Compatible.
 
 NOTE: 
 Current implementation supports Dropbox, this can be extendable for other storage providers (e.g. Box, Google Drive etc.) as well.
@@ -141,7 +144,58 @@ Record
 
 **Record.deleteRecord**() : removed the record from the table.
 
+**Adding a new storage provider :**
+---------------------
  
+ A new storage provider can be added to the module.
+ 
+ **addNewStorageProvider**(< string > storageType, < function> StorageContructor) : Add a new storage provider. StorageContructor should be a function that can be invoked using new keyword.
+ 
+Example: 
+
+    var fileDatastore = require('file-datastore'); 
+   
+    var CustomStorageProvider  = require('/path/to/storage/xyz');
+    
+    fileDatastore.addNewStorageProvider('xyz',CustomStorageProvider);
+    
+    fileDatastore.openDatastore('<datastore-name>', {
+        storageType: "xyz",
+        storageOptions: {}
+    }, function(err, datastore) {
+        if (err) {
+           console.error(err, "unable to open datastore");
+           return;
+        }
+        // do something with datastore
+    });
+
+An instance of storage provider must adhere to following methods :-
+
+**Storage.exists**(< function > callback) :  Check whether the path exists. The callback has 2 parameters :  < Error >err, < boolean > exists.
+
+**Storage.createDir**(< function > callback) :  Created a directory with datastore name. The callback has 2 parameters :  < Error >err, < object > response.
+
+**Storage.getFileList**(< function > callback) :  Gets the array of file names in the order in which they are created. The callback has 2 parameters :  < Error >err, < Array< string > > fileNames.
+
+**Storage.getLatestFileName**(< function > callback) :  Gets name of the latest file created. The callback has 2 parameters :  < Error >err, < Array< string > > fileNames.
+
+**Storage.getFile**(< string > fileName, < function > callback) :  gets the file data based on file name. The callback has 2 parameters :  < Error >err, < string > fileData.
+
+**Storage.saveFile**(< string > fileName, < string > fileData, < function > callback) :  Creates a new file based on file name. If the file with the same name already exists, than the error parameter of the callback should be an object with a key 'conflict', whose value should be true. The callback has 1 parameters :  < Error >err .
+
+**Storage.deleteFiles**(< Array< string >> fileNames, < function > callback) :  Delete files by file names present in the array.The callback has 1 parameters :  < Error >err.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
