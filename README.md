@@ -54,11 +54,17 @@ Example:
             path: ''< path where files will be stored (optional) >" 
       }
 
-**datastore.getTable**(< string >tableName) : Returns an instance of Table.
+Datastore
+---------
 
-**datastore.commit**(< function >callback(optional)) : save the changes into file.
+**Datastore.getTable**(< string >tableName) : Returns an instance of Table.
 
-**datastore.addRemoteChangeEventListener**(< function >eventHandler) : add eventlisteners that get fired when there is a change in remote data.
+**Datastore.commit**(< function >callback(optional)) : save the changes into file.
+
+**Datastore.addRemoteChangeEventListener**(< function >eventHandler) : add eventlisteners that get fired when there is a change in remote data.
+
+Table
+-----
 
 **Table.getAllRecords**() : Returns all records.
  
@@ -69,6 +75,9 @@ Example:
 **Table.removeRecord**(< string > id) : Removes record based on record Id.
 
 **Table.query**(< object > queryObject) : Returns list of records that matches the query object.
+
+Record
+------
 
 **Record.getId**() : Returns the id of the record.
 
