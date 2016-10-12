@@ -15,7 +15,7 @@ Current implementation supports Dropbox, this can be extendable for other storag
 Example:
 
     var fileDatastore = require('file-datastore');
-    fileDatastore.openDatastore('bookmark-box', {
+    fileDatastore.openDatastore('<datastore_name>', {
 	    storageType: "dropbox",
 	    storageOptions: {
 	        auth: {
