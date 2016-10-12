@@ -5,7 +5,7 @@ This is an alternative for Dropbox datastore, which has been deprecated from  Ap
 
 With Datastore; structured data (e.g. contacts, to-do items, etc.) can be stored and synced effortlessly across multiple devices. 
 
-Files are used as database to store data.
+Files are used as database to store data. Data is stored as a series of deltas (changes) and the database is constructed by reading all the changes.
 
 Browserify Compatible.
 
@@ -28,12 +28,29 @@ Example:
 	        return;
 		 }
 		 var tableContact = datastore.getTable('contact');
-		 tableContact.insert({
+		 
+		 // inserting a new record
+		 var record = tableContact.insert({
 	          	"name":"John Smith",
 	          	"city":"New York",
 	          	"country":"US"
          });
-         datastore.commit(); // commits the changes to file
+         datastore.commit(); // commits the changes to file. changes won't get reflect until and unless a commit is called on datastore.
+        
+        // updating a record 
+        record.set('city','Chicago');
+        record.get('city'); // New York
+        datastore.commit(); 
+        record.get('city'); // Chicago
+        
+        // querying a record
+        var matchedRecords = tableContact.query({
+         "country":"US"
+        });
+        matchedRecords.length // 1
+
+        
+        
 	});
 
 
