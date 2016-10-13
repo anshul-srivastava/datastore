@@ -43,7 +43,7 @@ In case of conflict between deltas of different devices, Following precedence is
 This module is Browserify Compatible.
 
 NOTE: 
-Current implementation supports Dropbox, this can be extendable for other storage providers (e.g. Box, Google Drive etc.) as well.
+Current implementation supports Dropbox, but this can be extended for other storage providers (e.g. Box, Google Drive etc.) as well.
 
 Example:
 
@@ -54,7 +54,8 @@ Example:
             auth: {
                 token: "<authToken>"
             }
-        }
+        },
+        path:"/"
     }, function(err, datastore) {
          if (err) {
             console.error(err, "unable to open datastore");
@@ -97,14 +98,17 @@ Example:
 
  - storageType < string > : Type of storage. Currently supported value is 'dropbox'.
  - storageOptions < object > : Properties required for initializing storage provider. Since only dropbox is currenty supported following are the valid values. 
-
- {
-            auth: {
+ {  
+   auth: {
                 token: "< token >",
-            },
-            path: ''< path where files will be stored (optional) >" 
-        }
+            }
+  }
         
+  
+
+ - path < string > :  Path where datastore will be created. Default is "/".
+
+      
 
   
    
@@ -143,6 +147,10 @@ Record
 **Record.set**(< String > key,< string/number >) : sets the value of the specified key.
 
 **Record.deleteRecord**() : removed the record from the table.
+
+
+----------
+
 
 **Adding a new storage provider :**
 ---------------------
