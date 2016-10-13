@@ -5,9 +5,11 @@ module.exports.openDatastore = function openDatastore(datastoreName, options, ca
 
     var Storage = storageService.getStorage(options.storageType);
     var storageOptions = options.storageOptions;
-    var store = new Storage(datastoreName, storageOptions);
+    var store = new Storage(storageOptions);
     Datastore.init({
-        store: store
+        datastoreName: datastoreName,
+        store: store,
+        path: options.path
     }, function(err, datastore) {
         callback(err, datastore);
     });

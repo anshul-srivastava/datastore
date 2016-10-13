@@ -2,15 +2,15 @@ var http = require('https');
 
 
 
-function DropboxStorage(datastoreName, options) {
+function DropboxStorage(options) {
 
     var self = this;
 
- 
+
     var accessToken = options.auth.token;
-    var relativePath = options.path || '/';
-    var datastorePath = relativePath + datastoreName;
-  
+   
+   
+
     var uploading = false;
 
     var onChangeEventListener;
@@ -50,10 +50,10 @@ function DropboxStorage(datastoreName, options) {
     }
 
 
-    function listFolder(callback) {
+    function listFolder(path, callback) {
 
         var params = {
-            path: datastorePath,
+            path: path,
             include_media_info: false,
             include_deleted: false,
             "recursive": false,
@@ -125,19 +125,19 @@ function DropboxStorage(datastoreName, options) {
 
     }
 
-    
 
-    
+
+
 
     this.setOnChangeEventListener = function setOnChangeEventListener(func) {
         onChangeEventListener = func;
     };
 
 
-    this.exists = function(callback) {
+    this.exists = function(path, callback) {
 
         var params = {
-            path: datastorePath,
+            path: path,
             include_media_info: false,
             include_deleted: false
         };
@@ -182,10 +182,10 @@ function DropboxStorage(datastoreName, options) {
         req.end();
     };
 
-    this.createDir = function createDir(callback) {
+    this.createDir = function createDir(path, callback) {
 
         var params = {
-            path: datastorePath,
+            path: path,
         };
 
         var req = http.request({
@@ -193,7 +193,7 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(null, {
                 "Content-Type": "application/json"
             }),
-            host:'api.dropboxapi.com',
+            host: 'api.dropboxapi.com',
             path: '/2/files/create_folder'
         }, function(res) {
 
@@ -218,7 +218,7 @@ function DropboxStorage(datastoreName, options) {
     };
 
 
-    this.getFileList = function getFileList(callback) {
+    this.getFileList = function getFileList(path, callback) {
         var fileList = [];
 
         function listFolderCallback(err, data) {
@@ -236,10 +236,10 @@ function DropboxStorage(datastoreName, options) {
             }
 
         }
-        listFolder(listFolderCallback);
+        listFolder(path, listFolderCallback);
     };
 
-    this.getLatestFileName = function(callback) {
+    this.getLatestFileName = function getLatestFileName(path, callback) {
         function listFolderCallback(err, data) {
             if (err) {
                 return callback(err);
@@ -259,14 +259,14 @@ function DropboxStorage(datastoreName, options) {
         if (latestCursor) {
             lisfFolderContinue(latestCursor, listFolderCallback);
         } else {
-            listFolder(listFolderCallback);
+            listFolder(path, listFolderCallback);
         }
 
     };
 
-    this.getFile = function getFile(fileName, callback) {
+    this.getFile = function getFile(filePath, callback) {
         var params = {
-            path: datastorePath + '/' + fileName
+            path: filePath
         };
         var req = http.request({
             method: 'POST',
@@ -296,10 +296,10 @@ function DropboxStorage(datastoreName, options) {
         req.end();
     };
 
-    this.saveFile = function saveFile(fileName, data, callback) {
+    this.saveFile = function saveFile(filePath, data, callback) {
         uploading = true;
         var params = {
-            path: datastorePath + '/' + fileName,
+            path: filePath,
             "autorename": false,
             "mute": true,
             "mode": "add"
@@ -310,7 +310,7 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(params, {
                 "Content-Type": "application/octet-stream"
             }),
-            host:'content.dropboxapi.com',
+            host: 'content.dropboxapi.com',
             path: '/2/files/upload',
         }, function(res) {
 
@@ -368,7 +368,7 @@ function DropboxStorage(datastoreName, options) {
                 headers: getHeaders(null, {
                     "Content-Type": "application/json"
                 }),
-                host:'api.dropboxapi.com',
+                host: 'api.dropboxapi.com',
                 path: '/2/files/delete_batch/check'
             }, function(res) {
 
@@ -414,7 +414,7 @@ function DropboxStorage(datastoreName, options) {
         if (fileList && fileList.length) {
             for (var i = 0; i < fileList.length; i++) {
                 reqParams.entries.push({
-                    path: datastorePath + '/' + fileList[i]
+                    path: fileList[i]
                 });
             }
         } else {
@@ -428,7 +428,7 @@ function DropboxStorage(datastoreName, options) {
             headers: getHeaders(null, {
                 "Content-Type": "application/json"
             }),
-            host:'api.dropboxapi.com',
+            host: 'api.dropboxapi.com',
             path: '/2/files/delete_batch'
         }, function(res) {
 
@@ -461,9 +461,6 @@ function DropboxStorage(datastoreName, options) {
         });
         req.write(JSON.stringify(reqParams));
         req.end();
-
-
-
 
     };
 

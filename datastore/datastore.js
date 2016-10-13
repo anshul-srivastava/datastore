@@ -69,7 +69,7 @@ function resolveConflict(remoteDeltas, currentDelta) { // remote always wins
     for (var i = 0; i < remoteDeltas.length; i++) {
         var delta = remoteDeltas[i];
         var tableNames = Object.keys(delta);
-       
+
         for (var j = 0; j < tableNames.length; j++) {
 
             /**
@@ -176,7 +176,9 @@ function increaseVersion(ver, clip) {
     }
 }
 
-function Datastore(options) {
+function Datastore(datastorePath, options) {
+
+    
     var store = options.store;
 
     var structuredData = options.data; // stores structured data
@@ -188,15 +190,15 @@ function Datastore(options) {
 
     var eventListeners = [];
 
-    var clip = options.clip || 5;
+    var clip = options.clip || 10;
 
     var queue = new QueueHandler();
 
 
-    
+
 
     function getAndResolveConflictDelta(currentDelta, callback) {
-        store.getFileList(function(err, fileList) {
+        store.getFileList(datastorePath, function(err, fileList) {
             if (err) {
                 return callback(err);
             }
@@ -217,8 +219,8 @@ function Datastore(options) {
                     }
 
                     function getFile(fileName) {
-                       
-                        store.getFile(fileName, function(err, data) {
+
+                        store.getFile(datastorePath + '/' + fileName, function(err, data) {
                             count++;
                             if (err) { // is deleted error ?? need to check in 
                                 //return callback(err);
@@ -231,7 +233,7 @@ function Datastore(options) {
                             if (count < fileList.length) {
                                 getFile(fileList[count]);
                             } else {
-                              
+
                                 latestRevision = serverRevision;
                                 currentDelta = resolveConflict(deltas, currentDelta);
                                 return callback(null, currentDelta, deltas);
@@ -252,7 +254,7 @@ function Datastore(options) {
     function poll() {
 
         setTimeout(function() {
-            store.getLatestFileName(function(err, fileName) {
+            store.getLatestFileName(datastorePath, function(err, fileName) {
                 if (err) {
                     return poll();
                 }
@@ -262,7 +264,7 @@ function Datastore(options) {
                     // fetching current delta
                     var currentDelta = {};
                     var tableNames = Object.keys(tables);
-                    
+
                     for (var i = 0; i < tableNames.length; i++) {
                         var table = tables[tableNames[i]];
                         var delta = table.getDelta();
@@ -270,7 +272,7 @@ function Datastore(options) {
                             currentDelta[tableNames[i]] = delta;
                         }
                     }
-                  
+
                     getAndResolveConflictDelta(currentDelta, function(err, currentDelta, remoteDeltas) {
                         if (err) {
                             if (typeof cb == 'function') {
@@ -329,7 +331,7 @@ function Datastore(options) {
         var snapshotDelta = null;
         var newStructuredData = null;
         if (rev % 1 === 0) { //clip size reached
-           
+
             snapshotDelta = {};
             var newStructuredData = JSON.parse(JSON.stringify(structuredData));
             //updateStructuedData(newStructuredData, currentDelta); // updating new data with current delta
@@ -347,8 +349,8 @@ function Datastore(options) {
             dataToSave = snapshotDelta;
         }
 
-        
-        store.saveFile(rev, dataToSave, function(err) {
+
+        store.saveFile(datastorePath + '/' + rev, dataToSave, function(err) {
             if (err) {
                 if (err.conflict) {
 
@@ -371,15 +373,15 @@ function Datastore(options) {
                 }
             }
 
-            
+
 
             latestRevision = rev;
-            
+
             if (snapshotDelta) {
                 structuredData = newStructuredData;
                 // deleting files
                 // creating file list
-                
+
                 var deleteList = [];
                 var deleteRevision = parseInt(latestRevision);
                 deleteRevision = deleteRevision - 3;
@@ -389,13 +391,13 @@ function Datastore(options) {
                     while (true) {
                         v = increaseVersion(v, clip);
                         if (parseInt(v) === deleteRevision) {
-                            deleteList.push(v);
+                            deleteList.push(datastorePath + '/' + v);
                         } else {
                             break;
                         }
                     }
                 }
-                
+
                 store.deleteFiles(deleteList, function(err) {
 
                 });
@@ -421,7 +423,7 @@ function Datastore(options) {
 
         var currentDelta = {};
         var tableNames = Object.keys(tables);
-        
+
         for (var i = 0; i < tableNames.length; i++) {
             var table = tables[tableNames[i]];
             var delta = table.getDelta();
@@ -469,15 +471,22 @@ function Datastore(options) {
 
 module.exports.init = function(options, callback) {
     console.log('init');
+
+
+    var relativePath = options.path || '/';
+    var datastoreName = options.datastoreName;
+    var datastorePath = relativePath + datastoreName;
+
+
     var store = options.store;
-    store.exists(function(err, exists) {
+    store.exists(datastorePath, function(err, exists) {
 
         if (err) {
             return callback(err);
         }
-        
+
         if (exists) { // exist
-            store.getFileList(function(err, fileList) {
+            store.getFileList(datastorePath, function(err, fileList) {
                 if (err) {
                     return callback(err);
                 }
@@ -495,7 +504,7 @@ module.exports.init = function(options, callback) {
 
 
                     function getFile(fileName) {
-                        store.getFile(fileName, function(err, data) {
+                        store.getFile(datastorePath + '/' + fileName, function(err, data) {
                             if (err) {
                                 return callback(err);
                             }
@@ -506,7 +515,7 @@ module.exports.init = function(options, callback) {
                             if (count < fileList.length) {
                                 getFile(fileList[count]);
                             } else {
-                                var datastore = new Datastore({
+                                var datastore = new Datastore(datastorePath, {
                                     data: structuredData,
                                     store: store,
                                     revision: parseFloat(fileList[fileList.length - 1])
@@ -517,7 +526,7 @@ module.exports.init = function(options, callback) {
                     }
                     getFile(fileList[count]);
                 } else {
-                    var datastore = new Datastore({
+                    var datastore = new Datastore(datastorePath, {
                         data: structuredData,
                         store: store,
                         revision: 0
@@ -527,13 +536,13 @@ module.exports.init = function(options, callback) {
 
             });
         } else { // does not exist ... creating dir
-            store.createDir(function(err, data) {
+            store.createDir(datastorePath, function(err, data) {
                 if (err) {
                     return callback(err);
                 }
                 // initializing data store
                 var structuredData = {};
-                var datastore = new Datastore({
+                var datastore = new Datastore(datastorePath, {
                     data: structuredData,
                     store: store,
                     revision: 0
