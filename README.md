@@ -172,19 +172,19 @@ Example:
 
 An instance of storage provider must adhere to following methods :-
 
-**Storage.exists**(< function > callback) :  Check whether the path exists. The callback has 2 parameters :  < Error >err, < boolean > exists.
+**Storage.exists**(< string > path, < function > callback) :  Check whether the path exists. The callback has 2 parameters :  < Error >err, < boolean > exists.
 
-**Storage.createDir**(< function > callback) :  Created a directory with datastore name. The callback has 2 parameters :  < Error >err, < object > response.
+**Storage.createDir**(< string > path, < function > callback) :  Created a directory in the following path. The callback has 2 parameters :  < Error >err, < object > response.
 
-**Storage.getFileList**(< function > callback) :  Gets the array of file names in the order in which they are created. The callback has 2 parameters :  < Error >err, < Array< string > > fileNames.
+**Storage.getFileList**(< string > path, < function > callback) :  Gets the array of file names in the order in which they are created from the path provided. The callback has 2 parameters :  < Error >err, < Array< string > > fileNames.
 
-**Storage.getLatestFileName**(< function > callback) :  Gets name of the latest file created. The callback has 2 parameters :  < Error >err, < Array< string > > fileNames.
+**Storage.getLatestFileName**(< string> path, < function > callback) :  Gets name of the latest file created in the directory path. The callback has 2 parameters :  < Error >err, < Array< string > > fileNames.
 
-**Storage.getFile**(< string > fileName, < function > callback) :  gets the file data based on file name. The callback has 2 parameters :  < Error >err, < string > fileData.
+**Storage.getFile**(< string > filePath, < function > callback) :  gets the file data from file path. The callback has 2 parameters :  < Error >err, < string > fileData.
 
-**Storage.saveFile**(< string > fileName, < string > fileData, < function > callback) :  Creates a new file based on file name. If the file with the same name already exists, than the error parameter of the callback should be an object with a key 'conflict', whose value should be true. The callback has 1 parameters :  < Error >err .
+**Storage.saveFile**(< string > filePath, < string > fileData, < function > callback) :  Creates a new file based on file path. If the file with the same name already exists, than the error parameter of the callback should be an object with a key 'conflict', whose value should be true. The callback has 1 parameters :  < Error >err .
 
-**Storage.deleteFiles**(< Array< string >> fileNames, < function > callback) :  Delete files by file names present in the array.The callback has 1 parameters :  < Error >err.
+**Storage.deleteFiles**(< Array< string >> fileNames, < function > callback) :  Delete files by file paths present in the array.The callback has 1 parameters :  < Error >err.
 
 
 

@@ -421,7 +421,7 @@ function DropboxStorage(options) {
             return callback(null);
         }
 
-
+       
 
         var req = http.request({
             method: 'POST',

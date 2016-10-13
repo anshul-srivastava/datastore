@@ -387,7 +387,7 @@ function Datastore(datastorePath, options) {
                 deleteRevision = deleteRevision - 3;
                 var v = deleteRevision;
                 if (deleteRevision >= 0) {
-                    deleteList.push(v);
+                    deleteList.push(datastorePath + '/' + v);
                     while (true) {
                         v = increaseVersion(v, clip);
                         if (parseInt(v) === deleteRevision) {
