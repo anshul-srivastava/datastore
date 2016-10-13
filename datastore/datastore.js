@@ -464,7 +464,11 @@ function Datastore(datastorePath, options) {
         if (typeof func === 'function') {
             eventListeners.push(func);
         }
-    }
+    };
+
+    this.getCurrentRevisionNo = function getCurrentRevisionNo(){
+      return latestRevision;
+    };
 
 }
 
