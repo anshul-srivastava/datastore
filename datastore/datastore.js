@@ -44,6 +44,20 @@ function updateStructuedData(structuredData, delta) {
 
 }
 
+function updateStructuredDataWithSnapshot(structuredData, snapshotData) {
+
+    var tablesNames = Object.keys(structuredData);
+    for (var i = 0; i < structuredData.length; i++) {
+        delete structuredData[tablesNames[i]];
+    }
+
+    var snapshotTablesNames = Object.keys(snapshotData);
+    for (var i = 0; i < snapshotTablesNames.length; i++) {
+        structuredData[snapshotTablesNames[i]] = snapshotData[snapshotTablesNames[i]];
+    }
+
+}
+
 // precdence
 // insert > delete > snapshot > update
 
@@ -178,7 +192,7 @@ function increaseVersion(ver, clip) {
 
 function Datastore(datastorePath, options) {
 
-    
+
     var store = options.store;
 
     var structuredData = options.data; // stores structured data
@@ -378,10 +392,11 @@ function Datastore(datastorePath, options) {
             latestRevision = rev;
 
             if (snapshotDelta) {
-                structuredData = newStructuredData;
+                // updating structured data with snapshot
+                updateStructuredDataWithSnapshot(structuredData,newStructuredData);
+                
                 // deleting files
-                // creating file list
-
+                // creating delete file list
                 var deleteList = [];
                 var deleteRevision = parseInt(latestRevision);
                 deleteRevision = deleteRevision - 3;
@@ -466,8 +481,8 @@ function Datastore(datastorePath, options) {
         }
     };
 
-    this.getCurrentRevisionNo = function getCurrentRevisionNo(){
-      return latestRevision;
+    this.getCurrentRevisionNo = function getCurrentRevisionNo() {
+        return latestRevision;
     };
 
 }

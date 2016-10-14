@@ -5,11 +5,12 @@ function Table(tableName, structuredData) {
 
     var currentDelta = {};
 
-    var tableData = structuredData[tableName];
+
 
     var self = this;
 
     this.getAllRecords = function() {
+        var tableData = structuredData[tableName];
         var records = [];
         if (!tableData) {
             return records;
@@ -23,6 +24,7 @@ function Table(tableName, structuredData) {
     };
 
     this.getRecord = function getRecord(recordId) {
+        var tableData = structuredData[tableName];
         if (tableData) {
             var recordData = tableData[recordId];
             if (recordData) {
@@ -59,6 +61,7 @@ function Table(tableName, structuredData) {
     };
 
     this.query = function query(queryObj) {
+        var tableData = structuredData[tableName];
         var records = [];
         if (tableData) {
             var searchKeys = Object.keys(queryObj);
@@ -107,7 +110,17 @@ function Table(tableName, structuredData) {
         };
 
         this.get = function get(key) {
-            return recordData[key];
+            var tableData = structuredData[tableName];
+            if (tableData) {
+                var recordData = tableData[id];
+                if (recordData) {
+                    return recordData[key];
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
         };
 
         this.set = function set(key, value) {
