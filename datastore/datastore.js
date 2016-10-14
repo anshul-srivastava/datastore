@@ -212,11 +212,25 @@ function Datastore(datastorePath, options) {
 
 
     function getAndResolveConflictDelta(currentDelta, callback) {
-        store.getFileList(datastorePath, function(err, fileList) {
+        store.getFileList(datastorePath, function(err, list) {
             if (err) {
                 return callback(err);
             }
-            if (fileList.length) {
+            var fileList = [];
+            if (list.length) {
+
+                // converting all the filenames in number 
+                for (var i = 0; i < list.length; i++) {
+                    var num = parseFloat(list[i]);
+                    if (num) {
+                        fileList.push(num);
+                    }
+
+                }
+                fileList.sort();
+
+
+
                 var uploadRevision = increaseVersion(latestRevision, clip);
                 var serverRevision = parseFloat(fileList[fileList.length - 1]);
                 if (uploadRevision > serverRevision) {
@@ -227,7 +241,7 @@ function Datastore(datastorePath, options) {
                     var count;
                     var deltas = [];
 
-                    var index = fileList.indexOf(uploadRevision + '');
+                    var index = fileList.indexOf(uploadRevision);
                     if (index !== -1) {
                         count = index;
                     }
@@ -393,8 +407,8 @@ function Datastore(datastorePath, options) {
 
             if (snapshotDelta) {
                 // updating structured data with snapshot
-                updateStructuredDataWithSnapshot(structuredData,newStructuredData);
-                
+                updateStructuredDataWithSnapshot(structuredData, newStructuredData);
+
                 // deleting files
                 // creating delete file list
                 var deleteList = [];
@@ -505,16 +519,31 @@ module.exports.init = function(options, callback) {
         }
 
         if (exists) { // exist
-            store.getFileList(datastorePath, function(err, fileList) {
+            store.getFileList(datastorePath, function(err, list) {
                 if (err) {
                     return callback(err);
                 }
+
+                var fileList = [];
                 var structuredData = {};
-                if (fileList.length) {
+                if (list.length) {
+
+                    // converting all the filenames in number 
+                    for (var i = 0; i < list.length; i++) {
+                        var num = parseFloat(list[i]);
+                        if (num) {
+                            fileList.push(num);
+                        }
+
+                    }
+
+                    fileList.sort();
+
                     var count = 0;
                     var latestRevision = parseInt(fileList[fileList.length - 1]);
+                    console.log('latestRevision ==>', latestRevision);
                     if (latestRevision !== 0) {
-                        var index = fileList.indexOf(latestRevision + '');
+                        var index = fileList.indexOf(latestRevision);
                         if (index !== -1) {
                             count = index;
                         }
@@ -523,6 +552,7 @@ module.exports.init = function(options, callback) {
 
 
                     function getFile(fileName) {
+                        console.log(fileName);
                         store.getFile(datastorePath + '/' + fileName, function(err, data) {
                             if (err) {
                                 return callback(err);
