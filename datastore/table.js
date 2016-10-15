@@ -65,20 +65,24 @@ function Table(tableName, structuredData) {
         var records = [];
         if (tableData) {
             var searchKeys = Object.keys(queryObj);
-            var ids = Object.keys(tableData);
-            for (var i = 0; i < ids.length; i++) {
-                var found = true;
-                var item = tableData[ids[i]];
-                for (var j = 0; j < searchKeys.length; j++) {
-                    if (item[searchKeys[j]] !== queryObj[searchKeys[j]]) {
-                        found = false;
+            if (searchKeys.length) {
+                var ids = Object.keys(tableData);
+                for (var i = 0; i < ids.length; i++) {
+                    var found = true;
+                    var item = tableData[ids[i]];
+                    for (var j = 0; j < searchKeys.length; j++) {
+                        if (item[searchKeys[j]] !== queryObj[searchKeys[j]]) {
+                            found = false;
+                        }
                     }
-                }
-                if (found) {
-                    var record = new Record(ids[i], item);
-                    records.push(record);
-                }
+                    if (found) {
+                        var record = new Record(ids[i], item);
+                        records.push(record);
+                    }
 
+                }
+            } else {
+                return this.getAllRecords();
             }
         }
 
